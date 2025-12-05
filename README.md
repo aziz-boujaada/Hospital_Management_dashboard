@@ -50,7 +50,8 @@ Ce backend repose sur une architecture simple, facile à comprendre et à mainte
 
 ## 🏗️ Structure du Projet 
  
-Hospital Management/
+```
+/Hospital Management
 │
 ├── Back-End/
 │   ├── config/
@@ -78,7 +79,7 @@ Hospital Management/
 ├── tailwind.config.js
 └── README.md
 |__ .gitignore
-
+```
 ## 📦 Installation
 
 ### 1. Cloner le projet

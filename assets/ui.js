@@ -24,29 +24,6 @@ function loadhDashboardPage() {
   });
 }
 
-// fetch patients page
-function loadPatientsPage() {
-  // console.log("content loaded" ,ContentZone)
-  const patientsTab = document.getElementById("patients_tab");
-  patientsTab.addEventListener("click", (e) => {
-    e.preventDefault();
-    console.log("btn patient clicked", patientsTab);
-    try {
-      fetch("Back-End/managment/patients.php ")
-        .then((res) => res.text())
-        .then((data) => {
-          ContentZone.innerHTML = data;
-          setTimeout(() => {
-            openPatientModal();
-            closePatientModal();
-            savePatients();
-          }, 100);
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  });
-}
 
 function openPatientModal() {
   const patientForm = document.getElementById("patient_form");
@@ -63,12 +40,37 @@ function closePatientModal() {
   if (!closeForm || !patientForm) return;
   closeForm.addEventListener("click", () => {
     patientForm.classList.add("hidden");
+  
   });
 }
 
+// fetch patients page
+function loadPatientsPage() {
+  // console.log("content loaded" ,ContentZone)
+  const patientsTab = document.getElementById("patients_tab");
+  patientsTab.addEventListener("click", (e) => {
+    e.preventDefault();
+    console.log("btn patient clicked", patientsTab);
+    try {
+      fetch("Back-End/managment/get_patients.php ")
+        .then((res) => res.text())
+        .then((data) => {
+          ContentZone.innerHTML = data;
+          setTimeout(() => {
+            openPatientModal();
+            closePatientModal();
+            savePatients();
+          }, 100);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
 // save patients information
 function savePatients() {
   const savePatientsBtn = document.getElementById("save_patient");
+    const patientForm = document.getElementById("form_patients");
   if (!savePatientsBtn) return;
   console.log("save btn", savePatientsBtn);
   savePatientsBtn.addEventListener("click", (e) => {
@@ -90,13 +92,11 @@ function savePatients() {
       adress: adress,
     };
     console.log(patientData);
-    SendPaitentData(patientData);
-    
+    SendPaitentData(patientData , patientForm);
   });
-  function SendPaitentData(patientData) {
-    const patientTable = document.getElementById("patient_table");
+  function SendPaitentData(patientData , form) {
     try {
-      fetch("Back-End/managment/patients.php", {
+      fetch("Back-End/managment/add_patient.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,22 +106,27 @@ function savePatients() {
         .then((res) => res.json())
         .then((data) => {
           console.log("data", data);
-          patientTable.innerHTML = `
 
-    <tbody class="divide-y divide-gray-200">
-      <tr class="hover:bg-gray-50">
-        <td class="px-6 py-4">1</td>
-        <td class="px-6 py-4">${data.firstName}</td>
-        <td class="px-6 py-4">${data.lastName}</td>
-        <td class="px-6 py-4">${data.email}</td>
-        <td class="px-6 py-4">555-1234</td>
-        <td class="px-6 py-4">Male</td>
-        <td class="px-6 py-4">28</td>
-        <td class="px-6 py-4">123 Main St</td>
-      </tr>
-    </tbody>
-  </table>
-`;
+          const responseMessage = document.getElementById("responseMessage");
+          const patientForm = document.getElementById("patient_form");
+          // responseMessage.innerHTML = "";
+          if (data.success) {
+            responseMessage.innerHTML = `
+              <p class = "bg-green-500 text-white rounded-md p-1 text-center">${data.message}</p>
+            `;
+            form.reset()
+            patientForm.classList.add("hidden")
+          } else {
+            responseMessage.innerHTML = `
+              <p class = "bg-red-500 text-white rounded-md p-1 text-center">${data.message}</p>
+            `;
+          }
+          
+          setTimeout(()=> {
+            responseMessage.classList.add("hidden")
+          }, 3000)
+        
+
         });
     } catch (err) {
       console.error(err);

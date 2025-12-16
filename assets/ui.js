@@ -63,6 +63,7 @@ function loadPatientsPage() {
         console.error(err);
       }
       DispalayAllPatient()
+      
   });
 }
 // save patients information
@@ -94,7 +95,7 @@ function savePatients() {
   });
   function SendPaitentData(patientData , form) {
     try {
-      fetch("Back-End/managment/add_patient.php", {
+      fetch("Back-End/managment/patient.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +124,7 @@ function savePatients() {
           setTimeout(()=> {
             responseMessage.innerHTML=""
           }, 3000)
-        
+         DispalayAllPatient()
 
         });
     } catch (err) {
@@ -161,7 +162,7 @@ async function fetchPatientsStatistics(){
 
 async function DispalayAllPatient(){
    try{
-    const res = await fetch("Back-End/managment/get_all_patients.php" ,{
+    const res = await fetch("Back-End/managment/patient.php" ,{
       method : "GET",
       headers : {
         "Content-Type" : "application/json"
@@ -182,9 +183,9 @@ async function DispalayAllPatient(){
         <td class="px-6 py-3">${data.gender}</td>
         <td class="px-6 py-3">${data.age}</td>
         <td class="px-6 py-3">${data.adress}</td>
-        <td class="px-6 py-3 flex items-center gap-3">
-        sapn<i class="fa-solid fa-trash"></i>
-        <i class="fa-solid fa-pen"></i>
+        <td class="px-6 py-3 flex items-center gap-4">
+        <span class="delete_patient text-red-600 hover:text-red-900 cursor-pointer transition-al" data-id="${data.patient_id}" onClick = "deletPatients(${data.patient_id})"><i class="fa-solid fa-trash"></i></span>
+        <sapn id="edit_patient" class = "text-yellow-600 pl-3  hover:text-yellow-300 cursor-pointer transition-all"><i class="fa-solid fa-pen"></i><sapn>
         </td>
       </tr>
    
@@ -194,7 +195,30 @@ async function DispalayAllPatient(){
    }catch(err){
     console.error(err)
    }
+ 
 }
+async function deletPatients(id){
+ 
+   console.log(id)
+    try{
+      const res = await fetch("Back-End/managment/patient.php" ,{
+        method : "DELETE",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({id}),
+      })
+      const response = await res.json()
+      console.log(response)
+      if(response.success){
+        DispalayAllPatient()
+      }
+    }catch(err){
+      console.error(err)
+    }
+     
+  
+  }
 
 document.addEventListener("DOMContentLoaded", () => {
   loadhDashboardPage();

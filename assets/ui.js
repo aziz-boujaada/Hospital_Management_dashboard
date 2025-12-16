@@ -4,23 +4,20 @@
 const ContentZone = document.getElementById("content");
 
 // console.log("content loaded" ,ContentZone)
-function loadhDashboardPage() {
+async function loadhDashboardPage() {
   const dashboardTab = document.getElementById("dashboard_tab");
-  dashboardTab.addEventListener("click", (e) => {
+  dashboardTab.addEventListener("click", async(e) => {
     e.preventDefault();
     console.log("btn dash clicked", dashboardTab);
     try {
-      fetch("Back-End/managment/dashboard.php")
-        .then((res) => res.text())
-        .then((data) => {
-          // const conentDiv = document.createElement("div")
-          // conentDiv.innerHTML = data ;
-          // ContentZone.appendChild(conentDiv)
-          ContentZone.innerHTML = data;
-        });
-    } catch (err) {
-      console.error(err);
-    }
+     const res = await fetch("Back-End/managment/dashboard.php")
+      const data = await res.text()
+      ContentZone.innerHTML = data
+      await fetchPatientsStatistics()
+      } catch (err) {
+        console.error(err);
+      }
+      
   });
 }
 
@@ -52,7 +49,7 @@ function loadPatientsPage() {
     e.preventDefault();
     console.log("btn patient clicked", patientsTab);
     try {
-      fetch("Back-End/managment/get_patients.php ")
+      fetch("Back-End/managment/get_patients_page.php")
         .then((res) => res.text())
         .then((data) => {
           ContentZone.innerHTML = data;
@@ -62,9 +59,10 @@ function loadPatientsPage() {
             savePatients();
           }, 100);
         });
-    } catch (err) {
-      console.error(err);
-    }
+      } catch (err) {
+        console.error(err);
+      }
+      DispalayAllPatient()
   });
 }
 // save patients information
@@ -109,7 +107,7 @@ function savePatients() {
 
           const responseMessage = document.getElementById("responseMessage");
           const patientForm = document.getElementById("patient_form");
-          // responseMessage.innerHTML = "";
+          responseMessage.innerHTML = "";
           if (data.success) {
             responseMessage.innerHTML = `
               <p class = "bg-green-500 text-white rounded-md p-1 text-center">${data.message}</p>
@@ -119,11 +117,11 @@ function savePatients() {
           } else {
             responseMessage.innerHTML = `
               <p class = "bg-red-500 text-white rounded-md p-1 text-center">${data.message}</p>
-            `;
+            `;          
           }
           
           setTimeout(()=> {
-            responseMessage.classList.add("hidden")
+            responseMessage.innerHTML=""
           }, 3000)
         
 
@@ -133,6 +131,71 @@ function savePatients() {
     }
   }
 }
+
+
+
+async function fetchPatientsStatistics(){
+  try{
+    const res = await fetch("Back-End/managment/get_dashboard_stats.php" ,{
+    method :"GET",
+    headers : {
+      "Content-Type" : "application/json"
+    }
+  })
+  const statistics = await res.json()
+  console.log(statistics)
+  
+  const totalPatients = document.getElementById("nbr_patients")
+    if(!totalPatients){
+      console.log("not found")
+      return;
+    }
+    totalPatients.textContent= `Patients : ${statistics.totalPatients}`
+  }catch (err) {
+    console.error('Fetch error:', err)
+    if (totalPatients) {
+      totalPatients.innerHTML = `<p>Error loading statistics</p>`
+    }
+  }
+}
+
+async function DispalayAllPatient(){
+   try{
+    const res = await fetch("Back-End/managment/get_all_patients.php" ,{
+      method : "GET",
+      headers : {
+        "Content-Type" : "application/json"
+      }
+    })
+
+    const patientData = await res.json()
+    console.log("all patients" , patientData)
+    const patientTable = document.getElementById("patient_table")
+    patientTable.innerHTML = patientData.patientData.map((data) => {
+     return`
+      <tr>
+        <td class="px-6 py-3">${data.patient_id}</td>
+        <td class="px-6 py-3">${data.first_name}</td>
+        <td class="px-6 py-3">${data.last_name}</td>
+        <td class="px-6 py-3">${data.email}</td>
+        <td class="px-6 py-3">${data.phone_number}</td>
+        <td class="px-6 py-3">${data.gender}</td>
+        <td class="px-6 py-3">${data.age}</td>
+        <td class="px-6 py-3">${data.adress}</td>
+        <td class="px-6 py-3 flex items-center gap-3">
+        sapn<i class="fa-solid fa-trash"></i>
+        <i class="fa-solid fa-pen"></i>
+        </td>
+      </tr>
+   
+  `
+    }).join("")
+    
+   }catch(err){
+    console.error(err)
+   }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadhDashboardPage();
   loadPatientsPage();

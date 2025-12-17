@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($stmt->execute()) {
         echo json_encode([
             "success" => true,
-            "message" => "patient added successfuly",
+            "message" => "patient added successfuly"
         ]);
     } else {
         echo json_encode(["success" => false, "message" => "insert field"]);
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $stmt->close();
     $conn->close();
-} elseif($_SERVER['REQUEST_METHOD'] === 'GET') {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $query = "SELECT * FROM patients";
     $all_patients = $conn->query($query);
     $patients = [];
@@ -107,6 +107,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     echo json_encode(["patientData" => $patients]);
     exit;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $id = (int)$data['patient_id'];
+    $first_name = htmlspecialchars($data['first_name']);
+    $last_name    = htmlspecialchars($data["last_name"]);
+    $email        = htmlspecialchars($data["email"]);
+    $gender       = $data["gender"];
+    $age          = (int)$data["age"];
+    $phone_number = $data["phone_number"];
+    $adress       = htmlspecialchars($data["adress"]);
+    $stmt = $conn->prepare( "UPDATE patients SET first_name = ? , last_name = ?  , email = ?  , gender = ?  , age = ?  , phone_number = ?  , adress = ?    WHERE patient_id = ? "
+    );
+
+    $stmt->bind_param(
+        "ssssissi",
+        $first_name,
+        $last_name,
+        $email,
+        $gender,
+        $age,
+        $phone_number,
+        $adress,
+        $id
+    );
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true , "message" => "patient updated successfully"]);
+        exit;
+    }else{
+       echo json_encode(["success" => false , "message" => "field updated "]);
+        exit; 
+    }
 } else {
     echo json_encode(["success" => false, "message" => "invalid request method"]);
     exit;

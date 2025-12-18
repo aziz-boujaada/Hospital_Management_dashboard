@@ -2,7 +2,43 @@
 
 // })
 const ContentZone = document.getElementById("content");
+//active tab 
+function activeTab(){
+  const dashboardTab = document.getElementById("dashboard_tab");
+  const patientsTab = document.getElementById("patients_tab");
+  const deaprtementTab = document.getElementById("deaprtement_tab");
+  const doctorTab = document.getElementById("doctor_tab");
 
+  dashboardTab.addEventListener("click" , ()=>{
+    dashboardTab.classList.add("active_tab")
+    patientsTab.classList.remove("active_tab")
+    deaprtementTab.classList.remove("active_tab")
+    doctorTab.classList.remove("active_tab")
+  })
+
+  patientsTab.addEventListener("click" , ()=>{
+    patientsTab.classList.add("active_tab")
+    dashboardTab.classList.remove("active_tab")
+    deaprtementTab.classList.remove("active_tab")
+    doctorTab.classList.remove("active_tab")
+  })
+
+  deaprtementTab.addEventListener("click" , ()=>{
+    deaprtementTab.classList.add("active_tab")
+    patientsTab.classList.remove("active_tab")
+    dashboardTab.classList.remove("active_tab")
+    doctorTab.classList.remove("active_tab")
+  })
+
+  doctorTab.addEventListener("click" , ()=>{
+    doctorTab.classList.add("active_tab")
+    deaprtementTab.classList.remove("active_tab")
+    patientsTab.classList.remove("active_tab")
+    dashboardTab.classList.remove("active_tab")
+  })
+}
+activeTab()
+// console.log("btn patient clicked", patientsTab);
 // console.log("content loaded" ,ContentZone)
 async function loadhDashboardPage() {
   // const dashboardTab = document.getElementById("dashboard_tab");
@@ -23,6 +59,7 @@ async function loadhDashboardPage() {
   }
   const dashboardTab = document.getElementById("dashboard_tab");
   dashboardTab.addEventListener("click", async (e) => {
+    dashboardTab.classList.add("active_tab")
     e.preventDefault();
     loadhDashboardPage()
     console.log("btn dash clicked", dashboardTab);
@@ -52,6 +89,7 @@ function loadPatientsPage() {
   patientsTab.addEventListener("click", (e) => {
     e.preventDefault();
     console.log("btn patient clicked", patientsTab);
+  
     try {
       fetch("Back-End/managment/get_patients_page.php")
         .then((res) => res.text())
@@ -168,15 +206,15 @@ async function fetchPatientsStatistics() {
     item => Number(item.DrIndepartement)
   );
 
-  const canvas= document.getElementById("doctorsChart")
-  const chartDiv = canvas.getContext("2d")
+  const chartDiv= document.getElementById("doctorsChart")
+
 
   new Chart(chartDiv, {
-    type: 'bar',
+    type: 'doughnut',
     data: {
       labels: chartLabel,
       datasets: [{
-        label: "Number of doctors in departments",
+        label: `Number of doctors in this departement`,
         data: doctorCount,
         backgroundColor: [
           '#3498db',

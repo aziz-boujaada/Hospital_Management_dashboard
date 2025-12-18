@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <div class="mt-8 mr-8 h-[80vh] overflow-x-auto rounded-lg shadow">
+  <div class="mt-8 my-8 h-[70vh] overflow-x-auto rounded-lg shadow">
 
     <table class="min-w-full text-left text-sm text-gray-700">
       <thead class="bg-gray-400 text-gray-900 uppercase text-xs font-semibold">

@@ -4,7 +4,7 @@
 
 
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 m-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 m-6 h-[70vh]">
 
   <!-- Patients -->
   <div class="bg-blue-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
@@ -39,15 +39,8 @@
     </div>
   </div>
 <!--number of doctors in departements -->
-  <div class="bg-purple-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
-    <div>
-      <p class="text-sm opacity-80">Departments</p>
-      <h2 id="nbr_dr_departements" class="text-sm font-bold mt-1"></h2>
-    </div>
-    <div class="bg-white/20 p-4 rounded-full">
-      <i class="fas fa-hospital fa-2x"></i>
-    </div>
-  </div>
+  <canvas id="doctorsChart" class="w-full h-80"></canvas>
+
 
 
 <script src="../../assets/ui.js"></script>

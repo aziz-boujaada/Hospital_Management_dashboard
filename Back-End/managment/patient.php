@@ -139,6 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
        echo json_encode(["success" => false , "message" => "field updated "]);
         exit; 
     }
+    $stmt->close();
+    $conn->colse();
 } else {
     echo json_encode(["success" => false, "message" => "invalid request method"]);
     exit;

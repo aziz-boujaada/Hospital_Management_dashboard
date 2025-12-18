@@ -11,10 +11,10 @@
 </head>
 
 <body>
-  <div class=" mt-8 mr-8 overflow-x-auto rounded-lg shadow">
+  <div class=" mt-8 mr-8 h-[70vh] overflow-x-auto rounded-lg shadow">
 
-    <table id="patient_table" class=" min-w-full text-left text-sm text-gray-700">
-      <thead class="bg-gray-100 text-gray-900 uppercase text-xs font-semibold">
+    <table class=" min-w-full text-left text-sm text-gray-700">
+      <thead class="bg-gray-400 text-gray-900 uppercase text-xs font-semibold">
         <tr>
           <th class="px-6 py-3">Id</th>
           <th class="px-6 py-3">First Name</th>
@@ -24,8 +24,10 @@
           <th class="px-6 py-3">Gender</th>
           <th class="px-6 py-3">Age</th>
           <th class="px-6 py-3">Address</th>
+          <th class="px-6 py-3">Actions</th>
         </tr>
       </thead>
+      <tbody  id="patient_table" class="bg-gray-100 text-gray-900 uppercase text-xs font-semibold " ></tbody>
     </table>
     <div
       id="patient_form"
@@ -129,6 +131,12 @@
             id="save_patient"
             class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-400 transition">
             Save Patient
+          </button>
+          <button
+            type="button"
+            id="update_patient"
+            class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-400 transition hidden">
+            update Patient
           </button>
         </div>
       </form>

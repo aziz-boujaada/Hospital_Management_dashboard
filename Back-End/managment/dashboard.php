@@ -1,18 +1,55 @@
-<?php 
-
-
+<?php
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-  <div class="flex items-start justify-around gap-4 m-4">
-    <div class="w-full h-48 bg-blue-500 rounded-lg shadow-md">aaa</div>
-    <div class="w-full h-48 bg-orange-500 rounded-lg shadow-md">cdc</div>
-    <div class="w-full h-48 bg-purple-500 rounded-lg shadow-md">dcd</div>
-    <div class="w-full h-48 bg-green-500 rounded-lg shadow-md">dcdc</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 m-6">
+
+  <!-- Patients -->
+  <div class="bg-blue-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
+    <div>
+      <p class="text-sm opacity-80">Patients</p>
+      <h2 id="nbr_patients" class="text-3xl font-bold mt-1"></h2>
+    </div>
+    <div class="bg-white/20 p-4 rounded-full">
+      <i class="fas fa-user-injured fa-2x"></i>
+    </div>
   </div>
-</body>
-</html>
+
+  <!-- Doctors -->
+  <div class="bg-orange-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
+    <div>
+      <p class="text-sm opacity-80">Doctors</p>
+      <h2 id="nbr_doctors" class="text-3xl font-bold mt-1"></h2>
+    </div>
+    <div class="bg-white/20 p-4 rounded-full">
+      <i class="fas fa-user-md fa-2x"></i>
+    </div>
+  </div>
+
+  <!-- Departments -->
+  <div class="bg-purple-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
+    <div>
+      <p class="text-sm opacity-80">Departments</p>
+      <h2 id="nbr_departements" class="text-3xl font-bold mt-1"></h2>
+    </div>
+    <div class="bg-white/20 p-4 rounded-full">
+      <i class="fas fa-hospital fa-2x"></i>
+    </div>
+  </div>
+<!--number of doctors in departements -->
+  <div class="bg-purple-500 rounded-xl shadow-lg p-6 flex items-center justify-between text-white">
+    <div>
+      <p class="text-sm opacity-80">Departments</p>
+      <h2 id="nbr_dr_departements" class="text-sm font-bold mt-1"></h2>
+    </div>
+    <div class="bg-white/20 p-4 rounded-full">
+      <i class="fas fa-hospital fa-2x"></i>
+    </div>
+  </div>
+
+
+<script src="../../assets/ui.js"></script>
+</div>
+

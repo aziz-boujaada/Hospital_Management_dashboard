@@ -573,7 +573,250 @@ async function editDepartement(data) {
   });
 }
 
+//// doctors
 
+// fetch doctors page
+function loadDoctorsPage() {
+  const doctorTab = document.getElementById("doctor_tab");
+  doctorTab.addEventListener("click", (e) => {
+    e.preventDefault();
+    try {
+      fetch("Back-End/managment/doctors_page.php")
+        .then((res) => res.text())
+        .then((data) => {
+          ContentZone.innerHTML = data;
+          setTimeout(() => {
+            openDoctorModal();
+            closeDoctorModal();
+            saveDoctor();
+            displayAllDoctors();
+          }, 100);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
+async function loadDepartmentsForDoctor() {
+  try {
+    const res = await fetch("Back-End/managment/departements.php", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+    const select = document.getElementById("doctor-department-id");
+    if (!select) return;
+    select.innerHTML = '<option value="">Select Department</option>';
+    data.departementData.forEach((dept) => {
+      const option = document.createElement("option");
+      option.value = dept.departement_id;
+      option.textContent = dept.departement_name;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// open doctor modal
+function openDoctorModal() {
+  const doctorForm = document.getElementById("doctor_form");
+  const openForm = document.getElementById("add_doctor");
+  if (!openForm || !doctorForm) return;
+
+  openForm.addEventListener("click", () => {
+    doctorForm.classList.remove("hidden");
+    loadDepartmentsForDoctor();
+  });
+}
+
+// close doctor modal
+function closeDoctorModal() {
+  const doctorForm = document.getElementById("doctor_form");
+  const closeForm = document.getElementById("close_doctor_form");
+  if (!closeForm || !doctorForm) return;
+
+  closeForm.addEventListener("click", () => {
+    doctorForm.classList.add("hidden");
+  });
+}
+
+// save doctor information
+function saveDoctor() {
+  const saveDoctorBtn = document.getElementById("save_doctor");
+  const doctorForm = document.getElementById("form_doctors");
+  if (!saveDoctorBtn) return;
+
+  saveDoctorBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const doctorData = {
+      first_name: document.getElementById("doctor-first-name").value,
+      last_name: document.getElementById("doctor-last-name").value,
+      specialization: document.getElementById("doctor-specialization").value,
+      phone_number: document.getElementById("doctor-phone").value,
+      email: document.getElementById("doctor-email").value,
+      id_departement: document.getElementById("doctor-department-id").value,
+    };
+    console.log(doctorData);
+    SendDoctorData(doctorData, doctorForm);
+  });
+}
+
+// send doctor data to backend
+function SendDoctorData(doctorData, form) {
+  try {
+    fetch("Back-End/managment/doctors.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(doctorData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const responseMessage = document.getElementById("responseMessage");
+        const doctorForm = document.getElementById("doctor_form");
+        responseMessage.innerHTML = "";
+
+        if (data.success) {
+          responseMessage.innerHTML = `<p class="bg-green-500 text-white rounded-md p-1 text-center">${data.message}</p>`;
+          form.reset();
+          doctorForm.classList.add("hidden");
+        } else {
+          responseMessage.innerHTML = `<p class="bg-red-500 text-white rounded-md p-1 text-center">${data.message}</p>`;
+        }
+
+        setTimeout(() => {
+          responseMessage.innerHTML = "";
+        }, 3000);
+
+        displayAllDoctors();
+      });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// display all doctors
+async function displayAllDoctors() {
+  try {
+    const res = await fetch("Back-End/managment/doctors.php", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const doctorData = await res.json();
+    const doctorTable = document.getElementById("doctor_table");
+
+    doctorTable.innerHTML = doctorData.doctorData
+      .map((data) => {
+        return `
+      <tr>
+        <td class="px-6 py-3">${data.doctor_id}</td>
+        <td class="px-6 py-3">${data.first_name}</td>
+        <td class="px-6 py-3">${data.last_name}</td>
+        <td class="px-6 py-3">${data.specialization}</td>
+        <td class="px-6 py-3">${data.phone_number}</td>
+        <td class="px-6 py-3">${data.email}</td>
+        <td class="px-6 py-3">
+        ${data.dep_name ? data.dep_name : "No Department"}
+      </td>
+        <td class="px-6 py-3 flex items-center gap-4">
+          <span class="delete_doctor text-red-600 hover:text-red-900 cursor-pointer transition-all" data-id="${
+            data.doctor_id
+          }" onClick="deleteDoctor(${data.doctor_id})">
+            <i class="fa-solid fa-trash"></i> delete
+          </span>
+          <span id="edit_doctor" class="text-yellow-600 pl-3 hover:text-yellow-300 cursor-pointer transition-all" onClick='editDoctor(${JSON.stringify(
+            data
+          )})'>
+            <i class="fa-solid fa-pen"></i> edit
+          </span>
+        </td>
+      </tr>
+      `;
+      })
+      .join("");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// delete doctor
+async function deleteDoctor(id) {
+  try {
+    const res = await fetch("Back-End/managment/doctors.php", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    const response = await res.json();
+    if (response.success) {
+      displayAllDoctors();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// edit doctor
+async function editDoctor(data) {
+  const saveDoctorBtn = document.getElementById("save_doctor");
+  const updateDoctorBtn = document.getElementById("update_doctor");
+  const doctorFormDiv = document.getElementById("doctor_form");
+  const doctorForm = document.getElementById("form_doctors");
+
+  saveDoctorBtn.classList.add("hidden");
+  updateDoctorBtn.classList.remove("hidden");
+  doctorFormDiv.classList.remove("hidden");
+
+  document.getElementById("doctor-first-name").value = data.first_name;
+  document.getElementById("doctor-last-name").value = data.last_name;
+  document.getElementById("doctor-specialization").value = data.specialization;
+  document.getElementById("doctor-phone").value = data.phone_number;
+  document.getElementById("doctor-email").value = data.email;
+  document.getElementById("doctor-department-id").value = data.id_departement;
+
+  updateDoctorBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const updatedData = {
+      doctor_id: data.doctor_id,
+      first_name: document.getElementById("doctor-first-name").value,
+      last_name: document.getElementById("doctor-last-name").value,
+      specialization: document.getElementById("doctor-specialization").value,
+      phone_number: document.getElementById("doctor-phone").value,
+      email: document.getElementById("doctor-email").value,
+      id_departement: document.getElementById("doctor-department-id").value,
+    };
+
+    try {
+      const res = await fetch("Back-End/managment/doctors.php", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+      const response = await res.json();
+      doctorForm.reset();
+      doctorFormDiv.classList.add("hidden");
+      updateDoctorBtn.classList.add("hidden");
+      saveDoctorBtn.classList.remove("hidden");
+
+      const responseMessage = document.getElementById("responseMessage");
+      responseMessage.innerHTML = "";
+      if (response.success) {
+        responseMessage.innerHTML = `<p class="bg-green-500 text-white rounded-md p-1 text-center">${response.message}</p>`;
+      } else {
+        responseMessage.innerHTML = `<p class="bg-red-500 text-white rounded-md p-1 text-center">${response.message}</p>`;
+      }
+
+      setTimeout(() => {
+        responseMessage.innerHTML = "";
+      }, 3000);
+
+      displayAllDoctors();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   loadhDashboardPage();

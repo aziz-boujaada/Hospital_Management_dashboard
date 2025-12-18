@@ -140,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit; 
     }
     $stmt->close();
-    $conn->colse();
+    $conn->close();
 } else {
     echo json_encode(["success" => false, "message" => "invalid request method"]);
     exit;

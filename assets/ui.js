@@ -288,9 +288,24 @@ async function DispalayAllPatient() {
       `;
       })
       .join("");
+      serchPatients(patientData)
   } catch (err) {
     console.error(err);
   }
+}
+function serchPatients(patientData){
+   const searchInput = document.getElementById("search_input")
+      searchInput.addEventListener("input" , () => {
+        const inputValue = searchInput.value.trim()
+        console.log(inputValue)
+       const filtredPatient = patientData.patientData.filter((patient)=>{
+          patient.first_name.toLowerCase().includes(inputValue.toLowerCase())
+          console.log(patient.first_name)
+        })
+        console.log(filtredPatient)
+        DispalayAllPatient(filtredPatient)
+       
+      })
 }
 async function deletPatients(id) {
   console.log(id);

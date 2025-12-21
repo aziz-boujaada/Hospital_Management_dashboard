@@ -32,3 +32,9 @@ CREATE TABLE doctors (
  REFERENCES departements(departement_id) 
  ON DELETE SET NULL
 );
+
+CREATE TABLE user(
+    user_id INT PRIMARY KEY AUTO_INCREMENT ,
+    user_name VARCHAR(50) NOT NULL,
+    user_password CHAR(50) NOT NULL 
+)
